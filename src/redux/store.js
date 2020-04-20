@@ -1,8 +1,11 @@
-import { createStore, combineReducers } from 'redux'
-import categoriesReducer from './reducers/categoriesReducer'
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import categoriesReducer from './reducers/categoriesReducer';
+import expensesReducer from './reducers/expensesReducer';
 
-const rootReducer = combineReducers({categoriesReducer})
+import { logger } from './middlewares/logger'
 
-const store = createStore(rootReducer)
+const rootReducer = combineReducers({category: categoriesReducer, expense: expensesReducer});
+
+const store = createStore(rootReducer, applyMiddleware(logger));
 
 export default store;

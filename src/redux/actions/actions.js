@@ -1,8 +1,11 @@
-import { SET_CATEGORIES } from './actionTypes'
+import { SET_CATEGORIES, ADD_CATEGORY } from './actionTypes'
 
 export const setCategories = categories => ({
     type: SET_CATEGORIES,
-    payload: {
-        content: categories
-    }
+    payload: categories
+})
+
+export const addCategory = category => ({
+    type: ADD_CATEGORY,
+    payload: category
 })
