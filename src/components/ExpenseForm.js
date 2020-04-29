@@ -1,4 +1,5 @@
 import moment from 'moment';
+import * as firebase from 'firebase';
 import { connect } from "react-redux";
 import React, { Component } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
@@ -37,6 +38,19 @@ class ExpenseForm extends Component {
   componentDidMount(){
     console.info('MOUNT')
     this.props.setCategories(categories)
+      // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyDPZaXtO9hYIrvyGO-ACFwmwClesprGt6Y",
+    authDomain: "savior-database.firebaseapp.com",
+    databaseURL: "https://savior-database.firebaseio.com",
+    projectId: "savior-database",
+    storageBucket: "savior-database.appspot.com",
+    messagingSenderId: "165579264658",
+    appId: "1:165579264658:web:e61250132a47555e238c4b"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  console.log(firebase);
   }
 
   showDatepicker(){

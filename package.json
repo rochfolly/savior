@@ -16,6 +16,8 @@
     "expo": "~36.0.0",
     "expo-file-system": "^8.0.0",
     "expo-sqlite": "^8.0.0",
+    "firebase": "^7.14.2",
+    "graphql": "^15.0.0",
     "moment": "^2.24.0",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
