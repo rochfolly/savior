@@ -1,5 +1,7 @@
 import * as firebase from 'firebase';
 
+import { SET_CATEGORIES } from '../actions/actionTypes';
+
 var firebaseConfig = {
     apiKey: "AIzaSyDPZaXtO9hYIrvyGO-ACFwmwClesprGt6Y",
     authDomain: "savior-database.firebaseapp.com",
@@ -11,15 +13,25 @@ var firebaseConfig = {
   };
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
-  console.log(firebase);
+  console.log(firebase.database);
 
   export const database = store => next => action => {
     switch(action.type){
-        
+        case SET_CATEGORIES: 
+          firebase.database().ref('categories/001').set({
+            category_name: 'travel',
+            primary: true,
+            last_expense : null,
+            daily_limit: null,
+            monthly_limit: null,
+            total_expenses: 0,
+            master_category_id: null,
+            child_categories: []
+          }).then((category) => {
+            console.log(category)
+          }).catch(error => console.log(error));
     }
     console.log('dispatching', action)
-    let result = next(action)
-    console.log('next state', store.getState())
     return result
   }
 

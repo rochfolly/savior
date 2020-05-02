@@ -38,8 +38,6 @@ class ExpenseForm extends Component {
   componentDidMount(){
     console.info('MOUNT')
     this.props.setCategories(categories)
-      // Your web app's Firebase configuration
-
   }
 
   showDatepicker(){
