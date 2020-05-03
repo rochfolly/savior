@@ -6,15 +6,9 @@ import Icon from 'react-native-vector-icons/Feather';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { TouchableHighlight, Text, View, TextInput, StyleSheet, Picker, Button } from 'react-native';
 
-import { setCategories, addCategory } from '../redux/actions/actions'
+import { setCategories, addCategory, addExpense } from '../redux/actions/actions'
 import { getAllCategories } from '../redux/selectors'
 
-const categories = [
-        {label:"Food", value:"food"},
-        {label:"Clothing", value:"clothing"},
-        {label:"Transport", value:"transport"},
-        {label:"Travel", value:"travel"},
-    ]
 
 class ExpenseForm extends Component {
   constructor(props) {
@@ -32,12 +26,9 @@ class ExpenseForm extends Component {
 
     this.showDatepicker = this.showDatepicker.bind(this);
     this.createCategory = this.createCategory.bind(this);
+    this.createExpense = this.createExpense.bind(this);
 
 
-  }
-  componentDidMount(){
-    console.info('MOUNT')
-    this.props.setCategories(categories)
   }
 
   showDatepicker(){
@@ -45,14 +36,32 @@ class ExpenseForm extends Component {
   }
 
   createCategory(){
-    let newCategoryName = this.state.newCategory
-    const newCategory = {label: newCategoryName, value: newCategoryName.trim().toLowerCase()}
-    this.props.addCategory(newCategory)
+    let newCategory = this.state.newCategory
+    this.props.addCategory(newCategory.trim().toLowerCase())
+
+    this.setState((prevState, props) => {
+      return {
+        category: newCategory,
+        add: false
+      }
+    })
+  }
+
+  createExpense(){
+    let newExpense = {
+      title: this.state.title,
+      amount: parseInt(this.state.amount), 
+      category_name: this.state.category, 
+      created: this.state.date.toISOString(),
+      category_id: null,
+      currency: 'USD'
+    }
+    this.props.addExpense(newExpense)
   }
 
   render() {
     const selectChoices = this.props.categories.map((choice, index) => 
-         <Picker.Item key={index} label={choice.label} value={choice.value} />
+         <Picker.Item key={index} label={choice.category_name} value={choice.value} />
       )
     
      const newCategoryZone = this.state.add == false ?
@@ -130,7 +139,11 @@ class ExpenseForm extends Component {
             />
             )}
             </View>
-            <TouchableHighlight style={styles.buttonExpense} underlayColor='green'>
+            <TouchableHighlight
+             style={styles.buttonExpense} 
+             underlayColor='green'
+             onPress={this.createExpense}
+             >
               <Text>Save</Text>
             </TouchableHighlight>
           </View>
@@ -143,8 +156,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  setCategories: () => {dispatch(setCategories(categories))},
-  addCategory: (newCategory) => {dispatch(addCategory(newCategory))}
+  addCategory: (newCategory) => {dispatch(addCategory(newCategory))},
+  addExpense: (newExpense) => {dispatch(addExpense(newExpense))}
 })
 export default connect(mapStateToProps, mapDispatchToProps)(ExpenseForm)
 
