@@ -1,4 +1,4 @@
-import {SET_CATEGORIES, ADD_CATEGORY} from '../actions/actionTypes'
+import {INIT_CATEGORIES, ADD_CATEGORY} from '../actions/actionTypes'
 
 const initialState = {
     categories: []
@@ -6,7 +6,7 @@ const initialState = {
 
 export default function(state = initialState, action) {
     switch (action.type) {
-        case SET_CATEGORIES: {
+        case INIT_CATEGORIES: {
             console.info('SETTING CATEGORIES')
            // const { categories } = action.payload;
             return {

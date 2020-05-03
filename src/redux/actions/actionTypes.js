@@ -1,5 +1,5 @@
-export const SET_CATEGORIES = 'SET_CATEGORIES';
+export const INIT_CATEGORIES = 'INIT_CATEGORIES';
 export const ADD_CATEGORY = 'ADD_CATEGORY';
 
-export const SET_EXPENSES = 'SET_EXPENSES';
+export const INIT_EXPENSES = 'INIT_EXPENSES';
 export const ADD_EXPENSE = 'ADD_EXPENSE';

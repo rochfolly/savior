@@ -1,11 +1,19 @@
-import { SET_CATEGORIES, ADD_CATEGORY } from './actionTypes'
+import { INIT_CATEGORIES, ADD_CATEGORY, ADD_EXPENSE, INIT_EXPENSES } from './actionTypes'
 
-export const setCategories = categories => ({
-    type: SET_CATEGORIES,
-    payload: categories
+export const setCategories = _ => ({
+    type: INIT_CATEGORIES,
 })
 
-export const addCategory = category => ({
+export const addCategory = newCategory => ({
     type: ADD_CATEGORY,
-    payload: category
+    payload: newCategory
+})
+
+export const setExpenses = _ => ({
+    type: INIT_EXPENSES,
+})
+
+export const addExpense = newExpense => ({
+    type: ADD_EXPENSE,
+    payload: newExpense
 })

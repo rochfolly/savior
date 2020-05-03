@@ -8,6 +8,6 @@ import { logger } from './middlewares/logger'
 
 const rootReducer = combineReducers({category: categoriesReducer, expense: expensesReducer});
 
-const store = createStore(rootReducer, applyMiddleware(logger, database));
+const store = createStore(rootReducer, applyMiddleware(database, logger));
 
 export default store;
