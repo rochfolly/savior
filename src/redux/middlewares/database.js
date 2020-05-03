@@ -1,7 +1,7 @@
 import * as firebase from 'firebase';
 
 import { INIT_CATEGORIES, INIT_EXPENSES, ADD_CATEGORY, ADD_EXPENSE } from '../actions/actionTypes';
-import { getCategoryID, getNextCategoryKey, getNextExpenseKey } from '../../database/utils/storeFunctions';
+import { getCategoryID, getNextCategoryKey, getNextExpenseKey } from '../utils/storeFunctions';
 
 
 var firebaseConfig = {
