@@ -1,5 +1,10 @@
+import { getAllExpenses, getAllCategories } from '../selectors';
+
 export function getNextCategoryKey(store){
-    const newCategoryKey = store.getState().category.categories.length + 1;
+    const categories = getAllCategories(store.getState());
+    const lastCategory = categories[categories.length - 1];
+    const lastCategoryID = parseInt(lastCategory.category_id);
+    let newCategoryKey = (lastCategoryID + 1).toString();
     if(newCategoryKey < 10){
         return '00' + newCategoryKey
     }
@@ -9,7 +14,10 @@ export function getNextCategoryKey(store){
 }
 
 export function getNextExpenseKey(store){
-    const newExpenseKey = store.getState().expense.expenses.length + 1;
+    const expenses = getAllExpenses(store.getState());
+    const lastExpense = expenses[expenses.length - 1];
+    const lastExpenseID = parseInt(lastExpense.expense_id);
+    let newExpenseKey = (lastExpenseID + 1).toString();
     if(newExpenseKey < 10){
         return '00' + newExpenseKey
     }

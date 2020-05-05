@@ -8,6 +8,7 @@ import { TouchableHighlight, Text, View, TextInput, StyleSheet, Picker, Button }
 
 import { setCategories, addCategory, addExpense } from '../redux/actions/actions'
 import { getAllCategories } from '../redux/selectors'
+import expensesReducer from '../redux/reducers/expensesReducer';
 
 
 class ExpenseForm extends Component {
@@ -152,7 +153,7 @@ class ExpenseForm extends Component {
 }
 
 const mapStateToProps = state => ({
-  categories: state.category.categories
+  categories: state.category.categories,
 })
 
 const mapDispatchToProps = dispatch => ({

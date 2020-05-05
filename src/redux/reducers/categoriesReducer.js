@@ -7,7 +7,6 @@ const initialState = {
 export default function(state = initialState, action) {
     switch (action.type) {
         case INIT_CATEGORIES: {
-            console.info('SETTING CATEGORIES')
            // const { categories } = action.payload;
             return {
               ...state,
@@ -15,7 +14,6 @@ export default function(state = initialState, action) {
             };
           }
           case ADD_CATEGORY: {
-            console.info('ADD NEW CATEGORY')
            // const { categories } = action.payload;
             return {
               ...state,

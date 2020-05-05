@@ -7,7 +7,6 @@ const initialState = {
 export default function(state = initialState, action) {
     switch (action.type) {
         case INIT_EXPENSES: {
-            console.info('SETTING EXPENSES')
            // const { expenses } = action.payload;
             return {
               ...state,
@@ -15,7 +14,6 @@ export default function(state = initialState, action) {
             };
           }
           case ADD_EXPENSE: {
-            console.info('ADD NEW EXPENSE')
            // const { expenses } = action.payload;
             return {
               ...state,

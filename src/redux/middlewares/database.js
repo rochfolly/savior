@@ -49,6 +49,7 @@ var firebaseConfig = {
                 else {
                     console.log('Category ' + newCategoryKey + ' added');
                     action.payload = {
+                        category_id: newCategoryKey,
                         category_name: rawCategoryName,
                         primary: true,
                         total_expenses: 0,
@@ -68,11 +69,12 @@ var firebaseConfig = {
               console.log(error)
             })
           break;
-          case ADD_EXPENSE:
+        case ADD_EXPENSE:
             const newExpense = action.payload;
             const newExpenseKey = getNextExpenseKey(store);
             newExpense.expense_id = newExpenseKey
             newExpense.category_id = getCategoryID(store, newExpense.category_name)
+            console.log('newExpense', newExpense);
             firebase.database().ref('expenses/' + newExpenseKey).set(newExpense, (error) => {
                 if(error) console.log(error)
                 else {

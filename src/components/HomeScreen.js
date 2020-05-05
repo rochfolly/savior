@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { FlatList, View } from 'react-native';
-import ExpenseList from './ExpenseList';
 import { connect } from 'react-redux';
+
+import ExpenseList from './ExpenseList';
 import { setCategories, setExpenses } from '../redux/actions/actions';
+import { getExpensesFromCategory, getAllExpenses } from '../redux/selectors';
 
 class HomeScreen extends Component {
   componentDidMount(){
@@ -21,7 +23,8 @@ class HomeScreen extends Component {
 
 const mapStateToProps = state => ({
   categories: state.category.categories,
-  expenses: state.expense.expenses
+  expenses: getAllExpenses(state),
+  foodExpenses: getExpensesFromCategory(state, 'food')
 })
 
 const mapDispatchToProps = dispatch => ({
