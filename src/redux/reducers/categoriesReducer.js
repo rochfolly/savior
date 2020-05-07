@@ -1,4 +1,4 @@
-import {INIT_CATEGORIES, ADD_CATEGORY} from '../actions/actionTypes'
+import {INIT_CATEGORIES, ADD_CATEGORY, UPDATE_CATEGORY} from '../actions/actionTypes'
 
 const initialState = {
     categories: []
@@ -7,19 +7,34 @@ const initialState = {
 export default function(state = initialState, action) {
     switch (action.type) {
         case INIT_CATEGORIES: {
-           // const { categories } = action.payload;
+            const currentCategories = action.payload;
             return {
               ...state,
-              categories: action.payload
+              categories: currentCategories
             };
           }
           case ADD_CATEGORY: {
-           // const { categories } = action.payload;
+            const newCategory = action.payload;
             return {
               ...state,
-              categories: [...state.categories, action.payload]
+              categories: [...state.categories, newCategory]
             };
           }
+          case UPDATE_CATEGORY: {
+             const { category_id } = action.payload;
+             const categoryToUpdate = state.categories.find(category => category.category_id === category_id);
+             const indexInCurrentState = state.categories.indexOf(categoryToUpdate);
+             console.log(indexInCurrentState, categoryToUpdate);
+             return {
+               ...state,
+               categories: state.categories.map((categ, index) => {
+                 if(index === indexInCurrentState){
+                   return action.payload
+                 }
+                 return categ
+               })
+             };
+           }
         default:
             return state
     }

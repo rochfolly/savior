@@ -1,4 +1,4 @@
-import { INIT_CATEGORIES, ADD_CATEGORY, ADD_EXPENSE, INIT_EXPENSES } from './actionTypes'
+import { INIT_CATEGORIES, ADD_CATEGORY, ADD_EXPENSE, INIT_EXPENSES, UPDATE_CATEGORY } from './actionTypes'
 
 export const setCategories = _ => ({
     type: INIT_CATEGORIES,
@@ -7,6 +7,11 @@ export const setCategories = _ => ({
 export const addCategory = newCategory => ({
     type: ADD_CATEGORY,
     payload: newCategory
+})
+
+export const updateCategory = updatedCategory => ({
+    type: UPDATE_CATEGORY,
+    payload: updatedCategory
 })
 
 export const setExpenses = _ => ({

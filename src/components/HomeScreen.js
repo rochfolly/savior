@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, View, Text } from 'react-native';
 import { connect } from 'react-redux';
 
 import ExpenseList from './ExpenseList';
 import { setCategories, setExpenses } from '../redux/actions/actions';
-import { getExpensesFromCategory, getAllExpenses } from '../redux/selectors';
+import { getExpensesFromCategory, getAllExpenses, getTotalSpendings } from '../redux/selectors';
 
 class HomeScreen extends Component {
   componentDidMount(){
@@ -13,8 +13,10 @@ class HomeScreen extends Component {
   }
 
   render() {
+    console.log('TOTAL', this.props.totalSpendings)
     return (
       <View>
+        <Text>Total Spendings: {this.props.totalSpendings}</Text>
         <ExpenseList data={this.props.expenses} />
       </View>
     );
@@ -24,7 +26,7 @@ class HomeScreen extends Component {
 const mapStateToProps = state => ({
   categories: state.category.categories,
   expenses: getAllExpenses(state),
-  foodExpenses: getExpensesFromCategory(state, 'food')
+  totalSpendings: getTotalSpendings(state)
 })
 
 const mapDispatchToProps = dispatch => ({

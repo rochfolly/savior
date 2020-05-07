@@ -28,8 +28,6 @@ class ExpenseForm extends Component {
     this.showDatepicker = this.showDatepicker.bind(this);
     this.createCategory = this.createCategory.bind(this);
     this.createExpense = this.createExpense.bind(this);
-
-
   }
 
   showDatepicker(){
@@ -54,7 +52,6 @@ class ExpenseForm extends Component {
       amount: parseInt(this.state.amount), 
       category_name: this.state.category, 
       created: this.state.date.toISOString(),
-      category_id: null,
       currency: 'USD'
     }
     this.props.addExpense(newExpense)
@@ -65,8 +62,7 @@ class ExpenseForm extends Component {
          <Picker.Item key={index} label={choice.category_name} value={choice.value} />
       )
     
-     const newCategoryZone = this.state.add == false ?
-     null :
+     const newCategoryZone = this.state.add == false ? null :
        <View style={styles.container}>
         <TextInput 
           label="New Category" 
@@ -80,9 +76,11 @@ class ExpenseForm extends Component {
         </TouchableHighlight>
       </View>
 
+
+      // RENDER THE FORM
       return(
         <View style={styles.container}>
-          <Text>{this.state.title}</Text>
+          <Text>NEW EXPENSE</Text>
           <View name="Form" style={styles.form}>
             <Text>Title</Text>
             <TextInput 

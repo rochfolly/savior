@@ -1,7 +1,9 @@
 import * as firebase from 'firebase';
 
-import { INIT_CATEGORIES, INIT_EXPENSES, ADD_CATEGORY, ADD_EXPENSE } from '../actions/actionTypes';
+import { INIT_CATEGORIES, INIT_EXPENSES, ADD_CATEGORY, ADD_EXPENSE, UPDATE_CATEGORY } from '../actions/actionTypes';
 import { getCategoryID, getNextCategoryKey, getNextExpenseKey } from '../utils/storeFunctions';
+import { updateCategory } from '../actions/actions'
+import {  getCategoryByID } from '../selectors';
 
 
 var firebaseConfig = {
@@ -22,7 +24,6 @@ var firebaseConfig = {
         // Categories
         case INIT_CATEGORIES: 
           firebase.database().ref('/categories').once('value', (categoriesData) => {
-              console.log(categoriesData.val())
               action.payload = Object.values(categoriesData.val())
               next(action)
             }, (error) => {
@@ -47,7 +48,6 @@ var firebaseConfig = {
             firebase.database().ref('categories/' + newCategoryKey).set(newCategory, (error) => {
                 if(error) console.log(error)
                 else {
-                    console.log('Category ' + newCategoryKey + ' added');
                     action.payload = {
                         category_id: newCategoryKey,
                         category_name: rawCategoryName,
@@ -55,14 +55,23 @@ var firebaseConfig = {
                         total_expenses: 0,
                     }
                     next(action)
+                    console.log('Category ' + newCategoryKey + ' added');
                 }
             })
           break;
-        
+        case UPDATE_CATEGORY: 
+            const updatedCategory = action.payload;
+            const updatedCategoryKey = updatedCategory.category_id
+            firebase.database().ref('categories/' + updatedCategoryKey).set(updatedCategory, (error) => {
+              if(error) console.log(error)
+              else next(action)
+              console.log('Category ' + updatedCategoryKey + ' updated');
+            })
+           break;
+       
         // Expenses
         case INIT_EXPENSES:
             firebase.database().ref('/expenses').once('value', (expensesData) => {
-                console.log(expensesData.val())
                 action.payload = Object.values(expensesData.val())
                 next(action)
               }, (error) => {
@@ -78,9 +87,13 @@ var firebaseConfig = {
             firebase.database().ref('expenses/' + newExpenseKey).set(newExpense, (error) => {
                 if(error) console.log(error)
                 else {
-                    console.log('Expense ' + newExpenseKey + ' added');
                     action.payload = newExpense
                     next(action)
+                    console.log('Expense ' + newExpenseKey + ' added');
+                    let updatedCategory = getCategoryByID(store.getState(), newExpense.category_id);
+                    updatedCategory.total_expenses += newExpense.amount;
+                    console.log('CATEGORY UPDATED', updatedCategory);
+                    store.dispatch(updateCategory(updatedCategory));                
                 }
             })
           break;
