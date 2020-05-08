@@ -4,7 +4,8 @@ import { connect } from "react-redux";
 import React, { Component } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { TouchableHighlight, Text, View, TextInput, StyleSheet, Picker, Button } from 'react-native';
+import {  Input, Button } from 'react-native-elements';
+import { TouchableHighlight, Text, View, TextInput, StyleSheet, Picker } from 'react-native';
 
 import { setCategories, addCategory, addExpense } from '../redux/actions/actions'
 import { getAllCategories } from '../redux/selectors'
@@ -71,9 +72,7 @@ class ExpenseForm extends Component {
           value={this.state.newCategory}
           onChangeText={(text) => this.setState({newCategory: text})}
         />
-        <TouchableHighlight onPress={this.createCategory}>
-          <Text>Add</Text>
-        </TouchableHighlight>
+        <Button title={'Add'} onPress={this.createCategory} />
       </View>
 
 
@@ -138,13 +137,10 @@ class ExpenseForm extends Component {
             />
             )}
             </View>
-            <TouchableHighlight
-             style={styles.buttonExpense} 
-             underlayColor='green'
-             onPress={this.createExpense}
-             >
-              <Text>Save</Text>
-            </TouchableHighlight>
+            <Button
+              title={'Save'}
+              onPress={this.createExpense}
+             />
           </View>
      );
   }
