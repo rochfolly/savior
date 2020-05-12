@@ -5,3 +5,7 @@ export const UPDATE_CATEGORY = 'UPDATE_CATEGORY';
 export const INIT_EXPENSES = 'INIT_EXPENSES';
 export const ADD_EXPENSE = 'ADD_EXPENSE';
 export const UPDATE_EXPENSE = 'UPDATE_EXPENSE';
+
+export const INIT_FIREBASE = 'INIT_FIREBASE';
+export const CREATE_USER = 'CREATE_USER';
+export const SET_USER = 'SET_USER';

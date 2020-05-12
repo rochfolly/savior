@@ -1,4 +1,9 @@
-import { INIT_CATEGORIES, ADD_CATEGORY, ADD_EXPENSE, INIT_EXPENSES, UPDATE_CATEGORY } from './actionTypes'
+import { 
+    INIT_CATEGORIES, INIT_EXPENSES, INIT_FIREBASE,
+    ADD_CATEGORY, ADD_EXPENSE, 
+    UPDATE_CATEGORY,
+    CREATE_USER, SET_USER,
+} from './actionTypes'
 
 export const setCategories = _ => ({
     type: INIT_CATEGORIES,
@@ -21,4 +26,18 @@ export const setExpenses = _ => ({
 export const addExpense = newExpense => ({
     type: ADD_EXPENSE,
     payload: newExpense
+})
+
+export const setFirebase = _ => ({
+    type: INIT_FIREBASE,
+})
+
+export const createUserAccount = (name, email, password) => ({
+    type: CREATE_USER,
+    payload: {name, email, password}
+})
+
+export const setCurrentUser = (email, password) => ({
+    type: SET_USER,
+    payload: {email, password}
 })

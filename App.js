@@ -9,18 +9,21 @@ import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import store from './src/redux/store'
 import ExpenseForm from './src/components/ExpenseForm'
 import HomeScreen from './src/components/HomeScreen'
+import SaviorHeader from './src/components/SaviorHeader';
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+  
   return (
     <Provider store={store}>
+      <SaviorHeader />
       <NavigationContainer>
         <Tab.Navigator 
           initialRouteName="Home" 
           backBehavior="history"
           tabBarOptions={{
-            activeBackgroundColor: 'green',
+            activeBackgroundColor: 'grey',
           }}
         >
           <Tab.Screen 

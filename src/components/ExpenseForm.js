@@ -10,6 +10,7 @@ import { TouchableHighlight, Text, View, TextInput, StyleSheet, Picker } from 'r
 import { setCategories, addCategory, addExpense } from '../redux/actions/actions'
 import { getAllCategories } from '../redux/selectors'
 import expensesReducer from '../redux/reducers/expensesReducer';
+import { capitalize } from './displayFunctions';
 
 
 class ExpenseForm extends Component {
@@ -60,7 +61,7 @@ class ExpenseForm extends Component {
 
   render() {
     const selectChoices = this.props.categories.map((choice, index) => 
-         <Picker.Item key={index} label={choice.category_name} value={choice.value} />
+         <Picker.Item key={index} label={capitalize(choice.category_name)} value={choice.category_name} />
       )
     
      const newCategoryZone = this.state.add == false ? null :

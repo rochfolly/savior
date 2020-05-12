@@ -3,21 +3,24 @@ import { FlatList, View, Text } from 'react-native';
 import { connect } from 'react-redux';
 
 import ExpenseList from './ExpenseList';
-import { setCategories, setExpenses } from '../redux/actions/actions';
+import { setCategories, setExpenses, setFirebase } from '../redux/actions/actions';
 import { getExpensesFromCategory, getAllExpenses, getTotalSpendings } from '../redux/selectors';
+import LoginScreen from './LoginScreen';
 
 class HomeScreen extends Component {
+
   componentDidMount(){
-    this.props.setCategories();
+    this.props.setFirebase();
     this.props.setExpenses();
+    this.props.setCategories();
   }
 
+        //   {/* <Text>Total Spendings: {this.props.totalSpendings}</Text>
+        // <ExpenseList data={this.props.expenses} /> */}
   render() {
-    console.log('TOTAL', this.props.totalSpendings)
     return (
       <View>
-        <Text>Total Spendings: {this.props.totalSpendings}</Text>
-        <ExpenseList data={this.props.expenses} />
+        <LoginScreen />
       </View>
     );
   }
@@ -30,6 +33,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  setFirebase: () => {dispatch(setFirebase())},
   setCategories: () => {dispatch(setCategories())},
   setExpenses: () => {dispatch(setExpenses())},
 })

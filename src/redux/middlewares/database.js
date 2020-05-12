@@ -1,9 +1,13 @@
 import * as firebase from 'firebase';
 
-import { INIT_CATEGORIES, INIT_EXPENSES, ADD_CATEGORY, ADD_EXPENSE, UPDATE_CATEGORY } from '../actions/actionTypes';
+import { 
+  INIT_CATEGORIES, INIT_EXPENSES, INIT_FIREBASE, 
+  ADD_CATEGORY, ADD_EXPENSE, UPDATE_CATEGORY,
+  CREATE_USER, SET_USER } from '../actions/actionTypes';
 import { getCategoryID, getNextCategoryKey, getNextExpenseKey } from '../utils/storeFunctions';
-import { updateCategory } from '../actions/actions'
+import { updateCategory, setCurrentUser } from '../actions/actions'
 import {  getCategoryByID } from '../selectors';
+import { getInitialSaviorCategories } from '../../database/utils/firebaseFunctions';
 
 
 var firebaseConfig = {
@@ -17,10 +21,64 @@ var firebaseConfig = {
   };
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
-  console.log(firebase.database());
 
+  ////// DATABASE MIDDLEWARE //////
   export const database = store => next => action => {
+    let uid = '';
     switch(action.type){
+        case INIT_FIREBASE: 
+          action.payload = firebase;
+          next(action);
+          break;
+
+        case CREATE_USER:
+          let newUserEmail = action.payload.email;
+          let newUserPassword = action.payload.password;
+          let name = action.payload.name;
+          // Create Firebase account
+          firebase.auth().createUserWithEmailAndPassword(newUserEmail, newUserPassword).then(userData => {
+            let user = userData.user;
+            console.log('NEW USER', userData.user);
+            const userInfo = {
+              username: name,
+              created: user.metadata.creationTime,
+              lastConnection: user.metadata.lastSignInTime,
+              email: newUserEmail,
+              uid: user.uid,
+            }
+            const initialCategories = getInitialSaviorCategories()
+            // Create user table
+            firebase.database().ref(user.uid + '/user/').set(userInfo, (error) => {
+              if(error) console.log(error)
+              else {
+                firebase.database().ref(user.uid + '/categories/').set(initialCategories, (error) => {
+                  if(error) console.log(error)
+                  else {
+                      next(action)
+                      store.dispatch(setCurrentUser(newUserEmail, newUserPassword))              
+                  }
+                })          
+              }
+            })
+          }).catch(error => {
+            console.log(error);
+            alert('An error occured', error)
+          });  
+          break;
+
+        case SET_USER: 
+          let email = action.payload.email;
+          let password = action.payload.password;
+          firebase.auth().signInWithEmailAndPassword(email, password).then(user => {
+            console.log('Login USER', user);
+            action.payload.user = user;
+            next(action);
+          }).catch(error => {
+            console.log(error);
+            alert('An error occured')
+            }); 
+          break;
+
         // Categories
         case INIT_CATEGORIES: 
           firebase.database().ref('/categories').once('value', (categoriesData) => {
@@ -99,32 +157,3 @@ var firebaseConfig = {
           break;
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{/* <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
-
-// <!-- TODO: Add SDKs for Firebase products that you want to use
-//      https://firebase.google.com/docs/web/setup#available-libraries -->
-
-<script>
-
-</script> */}

@@ -5,7 +5,7 @@ import { MaterialCommunityIcons, Icon } from 'react-native-vector-icons';
 
 import styles from '../style/ExpenseStyle';
 import ExpenseRow from './ExpenseRow';
-
+import { capitalize } from './displayFunctions';
 
 
 export default class ExpenseList extends Component {
@@ -17,7 +17,7 @@ export default class ExpenseList extends Component {
               <ListItem
                 key={index}
                 title={expense.title}
-                subtitle={expense.category_name.charAt(0).toUpperCase() + expense.category_name.slice(1)}
+                subtitle={capitalize(expense.category_name)}
                 leftIcon={<MaterialCommunityIcons name="food" color={'grey'} size={24} /> }
                 rightElement={
                   <Button title={expense.amount.toString()} type="solid" color="red"/>
