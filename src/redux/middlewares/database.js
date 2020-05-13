@@ -6,7 +6,7 @@ import {
   CREATE_USER, SET_USER } from '../actions/actionTypes';
 import { getCategoryID, getNextCategoryKey, getNextExpenseKey } from '../utils/storeFunctions';
 import { updateCategory, setCurrentUser } from '../actions/actions'
-import {  getCategoryByID } from '../selectors';
+import {  getCurrentUserID ,getCategoryByID } from '../selectors';
 import { getInitialSaviorCategories } from '../../database/utils/firebaseFunctions';
 
 
@@ -24,7 +24,7 @@ var firebaseConfig = {
 
   ////// DATABASE MIDDLEWARE //////
   export const database = store => next => action => {
-    let uid = '';
+    let userID = getCurrentUserID(store.getState());
     switch(action.type){
         case INIT_FIREBASE: 
           action.payload = firebase;
@@ -46,12 +46,13 @@ var firebaseConfig = {
               email: newUserEmail,
               uid: user.uid,
             }
+            uid = user.uid
             const initialCategories = getInitialSaviorCategories()
             // Create user table
-            firebase.database().ref(user.uid + '/user/').set(userInfo, (error) => {
+            firebase.database().ref(uid + '/user/').set(userInfo, (error) => {
               if(error) console.log(error)
               else {
-                firebase.database().ref(user.uid + '/categories/').set(initialCategories, (error) => {
+                firebase.database().ref(uid + '/categories/').set(initialCategories, (error) => {
                   if(error) console.log(error)
                   else {
                       next(action)
@@ -69,9 +70,10 @@ var firebaseConfig = {
         case SET_USER: 
           let email = action.payload.email;
           let password = action.payload.password;
-          firebase.auth().signInWithEmailAndPassword(email, password).then(user => {
-            console.log('Login USER', user);
-            action.payload.user = user;
+          firebase.auth().signInWithEmailAndPassword(email, password).then(userData => {
+            console.log('Login USER', userData);
+            action.payload.user = userData.user;
+            action.payload.uid = userData.user.uid;
             next(action);
           }).catch(error => {
             console.log(error);
@@ -80,14 +82,15 @@ var firebaseConfig = {
           break;
 
         // Categories
-        case INIT_CATEGORIES: 
-          firebase.database().ref('/categories').once('value', (categoriesData) => {
+        case INIT_CATEGORIES:
+          firebase.database().ref(userID + '/categories').once('value', (categoriesData) => {
               action.payload = Object.values(categoriesData.val())
               next(action)
             }, (error) => {
             console.log(error)
           })
           break;
+
         case ADD_CATEGORY:
             const rawCategoryName = action.payload;
             const newCategoryKey = getNextCategoryKey(store);
@@ -96,22 +99,12 @@ var firebaseConfig = {
                 category_id: newCategoryKey,
                 category_name: rawCategoryName,
                 primary: true,
-                last_expense : null,
-                daily_limit: null,
-                monthly_limit: null,
                 total_expenses: 0,
-                master_category_id: null,
-                child_categories: []
               }
-            firebase.database().ref('categories/' + newCategoryKey).set(newCategory, (error) => {
+            firebase.database().ref(userID + '/categories/' + newCategoryKey).set(newCategory, (error) => {
                 if(error) console.log(error)
                 else {
-                    action.payload = {
-                        category_id: newCategoryKey,
-                        category_name: rawCategoryName,
-                        primary: true,
-                        total_expenses: 0,
-                    }
+                    action.payload = newCategory
                     next(action)
                     console.log('Category ' + newCategoryKey + ' added');
                 }
@@ -120,18 +113,22 @@ var firebaseConfig = {
         case UPDATE_CATEGORY: 
             const updatedCategory = action.payload;
             const updatedCategoryKey = updatedCategory.category_id
-            firebase.database().ref('categories/' + updatedCategoryKey).set(updatedCategory, (error) => {
+            firebase.database().ref(userID + '/categories/' + updatedCategoryKey).set(updatedCategory, (error) => {
               if(error) console.log(error)
               else next(action)
               console.log('Category ' + updatedCategoryKey + ' updated');
             })
            break;
        
+           
         // Expenses
         case INIT_EXPENSES:
-            firebase.database().ref('/expenses').once('value', (expensesData) => {
-                action.payload = Object.values(expensesData.val())
-                next(action)
+            firebase.database().ref(userID + '/expenses').once('value', (expensesData) => {
+                console.log('NEW USER EXPENSES', expensesData)
+                if(expensesData.val()){
+                  action.payload = Object.values(expensesData.val())
+                  next(action)
+                }
               }, (error) => {
               console.log(error)
             })
@@ -142,7 +139,7 @@ var firebaseConfig = {
             newExpense.expense_id = newExpenseKey
             newExpense.category_id = getCategoryID(store, newExpense.category_name)
             console.log('newExpense', newExpense);
-            firebase.database().ref('expenses/' + newExpenseKey).set(newExpense, (error) => {
+            firebase.database().ref(userID + '/expenses/' + newExpenseKey).set(newExpense, (error) => {
                 if(error) console.log(error)
                 else {
                     action.payload = newExpense
@@ -157,3 +154,16 @@ var firebaseConfig = {
           break;
     }
   }
+
+
+  // let newCategory = {
+  //   category_id: newCategoryKey,
+  //   category_name: rawCategoryName,
+  //   primary: true,
+  //   last_expense : null,
+  //   daily_limit: null,
+  //   monthly_limit: null,
+  //   total_expenses: 0,
+  //   master_category_id: null,
+  //   child_categories: []
+  // }

@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import { Input, Button } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { createUserAccount, setCurrentUser } from '../redux/actions/actions';
+import SaviorHeader from './SaviorHeader';
 
 
 class LoginScreen extends Component {
@@ -12,11 +14,10 @@ class LoginScreen extends Component {
         name: '',
         email: '',
         password: '',
-        login: false,
+        login: true,
     };
 
     this.authenticate = this.authenticate.bind(this);
-
   }
 
   authenticate(){
@@ -25,59 +26,59 @@ class LoginScreen extends Component {
       }
       else this.props.createUserAccount(this.state.name, this.state.email, this.state.password)
   }
-  
+
 
   render() {
-    let nameInput = this.state.login ? 
-    null 
-    : 
-    <Input
+   // Icon.getImageSource('user', 20, 'red').then((source) => console.log(source));
+   let nameInput = this.state.login == true ?
+   <Text></Text> :         
+   <Input
         label="First Name"
+        name="firstname"
         placeholder="John"
         leftIcon={{ type: 'font-awesome', name: 'user' }}
         // style={styles}
         onChangeText={value => this.setState({ name: value })}
     />
 
+
     return (
-      <View>
-
-        {nameInput}
-        <Input
-            label="Email address"
-            placeholder="example@gmail.com"
-            leftIcon={{ type: 'font-awesome', name: 'envelope' }}
-            // style={styles}
-            onChangeText={value => this.setState({ email: value })}
-        />
-
-        <Input
-            label="Password"
-            secureTextEntry={true} 
-            placeholder=""
-            leftIcon={{ type: 'font-awesome', name: 'lock' }}
-            // style={styles}
-            onChangeText={value => this.setState({ password: value })}
-        />
-        <Button
-            title="LOGIN"
-            buttonStyle={{ 'borderColor': 'green' }}
-            type="solid"
-        />
-        <Button
-            title="SIGN IN"
-            type="outline"
-            onPress={this.authenticate}
-        />
-
-      </View>
+        <View>
+            <SaviorHeader/>
+            <Text>{this.state.login ? "LOG IN" : "SIGNUP"}</Text>
+            {nameInput}
+            <Input
+                label="Email address"
+                name="email"
+                placeholder="example@gmail.com"
+                leftIcon={{ type: 'font-awesome', name: 'envelope' }}
+                // style={styles}
+                onChangeText={value => this.setState({ email: value })}
+            />
+            <Input
+                label="Password"
+                name="password"
+                secureTextEntry={true} 
+                placeholder=""
+                leftIcon={{ type: 'font-awesome', name: 'lock' }}
+                // style={styles}
+                onChangeText={value => this.setState({ password: value })}                      
+            />
+            <Button
+                title={this.state.login ? "LOG IN" : "SIGNUP"}
+                buttonStyle={{ 'borderColor': 'green' }}
+                type="solid"
+                onPress={this.authenticate}
+            />
+            <Button
+                title={this.state.login ? "Sign up" : "Log in"}
+                type="outline"
+                onPress={() => this.setState({login: !this.state.login})}
+            />
+        </View>
     );
   }
 }
-
-const mapStateToProps = state => ({
-  firebase: state.auth.database,
-})
 
 const mapDispatchToProps = dispatch => ({
   setCurrentUser: (email, password) => {dispatch(setCurrentUser(email, password))},

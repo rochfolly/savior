@@ -1,8 +1,9 @@
 import { INIT_FIREBASE, SET_USER } from '../actions/actionTypes'
 
 const initialState = {
+    userID: null,
     username: '',
-    user: {},
+    user: null,
     firebase: null,
 }
 
@@ -16,10 +17,11 @@ export default function(state = initialState, action) {
             };
           }
           case SET_USER: {
-            const { user }  = action.payload;
+            const { user, uid }  = action.payload;
             return {
               ...state,
-              user: user
+              user: user,
+              userID: uid
             };
           }
         default:

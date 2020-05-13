@@ -1,3 +1,5 @@
+export const getCurrentUserID = state => state.auth.userID;
+
 export const getCategoryByName = (state, categoryName) => {
     return state.category.categories.find(category => category.category_name === categoryName);
 }

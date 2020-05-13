@@ -15,18 +15,21 @@ export function getNextCategoryKey(store){
 
 export function getNextExpenseKey(store){
     const expenses = getAllExpenses(store.getState());
-    const lastExpense = expenses[expenses.length - 1];
-    const lastExpenseID = parseInt(lastExpense.expense_id);
-    let newExpenseKey = (lastExpenseID + 1).toString();
-    if(newExpenseKey < 10){
-        return '00' + newExpenseKey
+    if(expenses.length > 0){
+        const lastExpense = expenses[expenses.length - 1];
+        const lastExpenseID = parseInt(lastExpense.expense_id);
+        let newExpenseKey = (lastExpenseID + 1).toString();
+        if(newExpenseKey < 10){
+            return '00' + newExpenseKey
+        }
+        else if(newExpenseKey > 99){
+            return newExpenseKey
+        }
+        else{
+            return '0' + newExpenseKey
+        }
     }
-    else if(newExpenseKey > 99){
-        return newExpenseKey
-    }
-    else{
-        return '0' + newExpenseKey
-    }
+    return '001'
 }
 
 export function getCategoryID(store, categoryName){

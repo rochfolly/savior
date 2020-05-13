@@ -10,17 +10,16 @@ import LoginScreen from './LoginScreen';
 class HomeScreen extends Component {
 
   componentDidMount(){
-    this.props.setFirebase();
     this.props.setExpenses();
     this.props.setCategories();
   }
 
-        //   {/* <Text>Total Spendings: {this.props.totalSpendings}</Text>
-        // <ExpenseList data={this.props.expenses} /> */}
+
   render() {
     return (
       <View>
-        <LoginScreen />
+        <Text>Total Spendings: {this.props.totalSpendings}</Text>
+        <ExpenseList data={this.props.expenses} />
       </View>
     );
   }
