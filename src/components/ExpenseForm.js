@@ -10,7 +10,7 @@ import { TouchableHighlight, Text, View, TextInput, StyleSheet, Picker } from 'r
 import { setCategories, addCategory, addExpense } from '../redux/actions/actions'
 import { getAllCategories } from '../redux/selectors'
 import expensesReducer from '../redux/reducers/expensesReducer';
-import { capitalize } from './displayFunctions';
+import { capitalize } from '../utils/displayFunctions';
 
 
 class ExpenseForm extends Component {

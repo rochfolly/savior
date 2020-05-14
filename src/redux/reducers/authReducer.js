@@ -5,6 +5,7 @@ const initialState = {
     username: '',
     user: null,
     firebase: null,
+    lastLogin: null
 }
 
 export default function(state = initialState, action) {
@@ -17,11 +18,12 @@ export default function(state = initialState, action) {
             };
           }
           case SET_USER: {
-            const { user, uid }  = action.payload;
+            const { user, uid, name }  = action.payload;
             return {
               ...state,
               user: user,
-              userID: uid
+              userID: uid,
+              username: name
             };
           }
         default:

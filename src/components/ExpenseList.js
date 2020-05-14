@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { FlatList, View, ScrollView  } from 'react-native';
 import { Container, ListItem, Button } from 'react-native-elements';
 import { MaterialCommunityIcons, Icon } from 'react-native-vector-icons';
 
 import styles from '../style/ExpenseStyle';
 import ExpenseRow from './ExpenseRow';
-import { capitalize } from './displayFunctions';
+import { capitalize, getCategoryIcon } from '../utils/displayFunctions';
 
 
-export default class ExpenseList extends Component {
+class ExpenseList extends Component {
     render() {
       return (
         <ScrollView  accessibilityRole='scrollbar' >
@@ -20,7 +21,15 @@ export default class ExpenseList extends Component {
                 subtitle={capitalize(expense.category_name)}
                 leftIcon={<MaterialCommunityIcons name="food" color={'grey'} size={24} /> }
                 rightElement={
-                  <Button title={expense.amount.toString()} type="solid" color="red"/>
+                  <Button 
+                    title={'- ' + expense.amount.toString()} 
+                    type="solid"
+                    buttonStyle={{
+                      backgroundColor: 'red',
+                      width: 55,
+                      height: 30
+                    }}
+                  />
                 }
                 bottomDivider
                 chevron
@@ -38,3 +47,12 @@ export default class ExpenseList extends Component {
       );
     }
   }
+
+  const mapStateToProps = state => ({
+    categories: state.category.categories,
+  })
+  
+  export default connect(
+    mapStateToProps,
+    null
+    )(ExpenseList)

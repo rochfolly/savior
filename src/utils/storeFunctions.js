@@ -1,4 +1,4 @@
-import { getAllExpenses, getAllCategories } from '../selectors';
+import { getAllExpenses, getAllCategories } from '../redux/selectors';
 
 export function getNextCategoryKey(store){
     const categories = getAllCategories(store.getState());

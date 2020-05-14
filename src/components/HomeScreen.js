@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import ExpenseList from './ExpenseList';
 import { setCategories, setExpenses, setFirebase } from '../redux/actions/actions';
-import { getExpensesFromCategory, getAllExpenses, getTotalSpendings } from '../redux/selectors';
+import { getExpensesFromCategory, getAllExpenses, getTotalSpendings, getCurrentUserName } from '../redux/selectors';
 import LoginScreen from './LoginScreen';
 
 class HomeScreen extends Component {
@@ -19,7 +19,12 @@ class HomeScreen extends Component {
     return (
       <View>
         <Text>Total Spendings: {this.props.totalSpendings}</Text>
-        <ExpenseList data={this.props.expenses} />
+        {this.props.expenses.length > 0 ? 
+          <ExpenseList data={this.props.expenses} />
+          :
+          <Text>You don't have any expenses.</Text>
+        }
+        
       </View>
     );
   }
@@ -28,7 +33,8 @@ class HomeScreen extends Component {
 const mapStateToProps = state => ({
   categories: state.category.categories,
   expenses: getAllExpenses(state),
-  totalSpendings: getTotalSpendings(state)
+  totalSpendings: getTotalSpendings(state),
+  username: getCurrentUserName(state)
 })
 
 const mapDispatchToProps = dispatch => ({

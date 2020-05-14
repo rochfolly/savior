@@ -4,10 +4,10 @@ import {
   INIT_CATEGORIES, INIT_EXPENSES, INIT_FIREBASE, 
   ADD_CATEGORY, ADD_EXPENSE, UPDATE_CATEGORY,
   CREATE_USER, SET_USER } from '../actions/actionTypes';
-import { getCategoryID, getNextCategoryKey, getNextExpenseKey } from '../utils/storeFunctions';
+import { getCategoryID, getNextCategoryKey, getNextExpenseKey } from '../../utils/storeFunctions';
 import { updateCategory, setCurrentUser } from '../actions/actions'
 import {  getCurrentUserID ,getCategoryByID } from '../selectors';
-import { getInitialSaviorCategories } from '../../database/utils/firebaseFunctions';
+import { getInitialSaviorCategories } from '../../utils/firebaseFunctions';
 
 
 var firebaseConfig = {
@@ -26,6 +26,7 @@ var firebaseConfig = {
   export const database = store => next => action => {
     let userID = getCurrentUserID(store.getState());
     switch(action.type){
+      
         case INIT_FIREBASE: 
           action.payload = firebase;
           next(action);
@@ -37,22 +38,21 @@ var firebaseConfig = {
           let name = action.payload.name;
           // Create Firebase account
           firebase.auth().createUserWithEmailAndPassword(newUserEmail, newUserPassword).then(userData => {
-            let user = userData.user;
+            let newUser = userData.user;
             console.log('NEW USER', userData.user);
             const userInfo = {
               username: name,
-              created: user.metadata.creationTime,
-              lastConnection: user.metadata.lastSignInTime,
+              created: newUser.metadata.creationTime,
+              lastConnection: newUser.metadata.lastSignInTime,
               email: newUserEmail,
-              uid: user.uid,
+              uid: newUser.uid,
             }
-            uid = user.uid
             const initialCategories = getInitialSaviorCategories()
             // Create user table
-            firebase.database().ref(uid + '/user/').set(userInfo, (error) => {
+            firebase.database().ref(newUser.uid + '/user/').set(userInfo, (error) => {
               if(error) console.log(error)
               else {
-                firebase.database().ref(uid + '/categories/').set(initialCategories, (error) => {
+                firebase.database().ref(newUser.uid + '/categories/').set(initialCategories, (error) => {
                   if(error) console.log(error)
                   else {
                       next(action)
@@ -63,7 +63,7 @@ var firebaseConfig = {
             })
           }).catch(error => {
             console.log(error);
-            alert('An error occured', error)
+            alert(error.message)
           });  
           break;
 
@@ -72,12 +72,19 @@ var firebaseConfig = {
           let password = action.payload.password;
           firebase.auth().signInWithEmailAndPassword(email, password).then(userData => {
             console.log('Login USER', userData);
-            action.payload.user = userData.user;
-            action.payload.uid = userData.user.uid;
-            next(action);
+            let loggedInUser = userData.user;
+            action.payload.user = loggedInUser;
+            action.payload.uid = loggedInUser.uid;
+            firebase.database().ref(loggedInUser.uid + '/user/username').once('value', (nameData) => {
+              action.payload.name = nameData.val();
+              next(action)
+            }, (error) => {
+              alert(error.message);
+              console.log(error)
+            })
           }).catch(error => {
             console.log(error);
-            alert('An error occured')
+            alert(error.message);
             }); 
           break;
 
@@ -94,7 +101,6 @@ var firebaseConfig = {
         case ADD_CATEGORY:
             const rawCategoryName = action.payload;
             const newCategoryKey = getNextCategoryKey(store);
-            console.log('newKey', newCategoryKey);
             let newCategory = {
                 category_id: newCategoryKey,
                 category_name: rawCategoryName,
@@ -120,12 +126,11 @@ var firebaseConfig = {
             })
            break;
        
-           
+
         // Expenses
         case INIT_EXPENSES:
             firebase.database().ref(userID + '/expenses').once('value', (expensesData) => {
-                console.log('NEW USER EXPENSES', expensesData)
-                if(expensesData.val()){
+                if(expensesData.exists()){
                   action.payload = Object.values(expensesData.val())
                   next(action)
                 }
@@ -133,12 +138,12 @@ var firebaseConfig = {
               console.log(error)
             })
           break;
+
         case ADD_EXPENSE:
             const newExpense = action.payload;
             const newExpenseKey = getNextExpenseKey(store);
             newExpense.expense_id = newExpenseKey
             newExpense.category_id = getCategoryID(store, newExpense.category_name)
-            console.log('newExpense', newExpense);
             firebase.database().ref(userID + '/expenses/' + newExpenseKey).set(newExpense, (error) => {
                 if(error) console.log(error)
                 else {
@@ -147,7 +152,6 @@ var firebaseConfig = {
                     console.log('Expense ' + newExpenseKey + ' added');
                     let updatedCategory = getCategoryByID(store.getState(), newExpense.category_id);
                     updatedCategory.total_expenses += newExpense.amount;
-                    console.log('CATEGORY UPDATED', updatedCategory);
                     store.dispatch(updateCategory(updatedCategory));                
                 }
             })
