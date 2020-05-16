@@ -4,21 +4,119 @@ import { StyleSheet, Text, View, FlatList } from 'react-native';
 import { Provider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createSwitchNavigator } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import { YellowBox } from 'react-native';
 import _ from 'lodash';
 
-import ExpenseList from './ExpenseList';
-import CategoryList from './CategoryList';
+import ExpenseList from './Expense/ExpenseList';
+import CategoryList from './Category/CategoryList';
 import { setCategories, setExpenses, setFirebase } from '../redux/actions/actions';
 import { getExpensesFromCategory, getAllExpenses, getTotalSpendings } from '../redux/selectors';
-import LoginScreen from './LoginScreen';
-import ExpenseForm from './ExpenseForm';
-import HomeScreen from './HomeScreen';
+import LoginScreen from './Auth/LoginScreen';
+import ExpenseForm from './Expense/ExpenseForm';
+import HomeScreen from './Home/HomeScreen';
 import SaviorHeader from './SaviorHeader';
+import RegisterScreen from './Auth/RegisterScreen';
 
-const Tab = createBottomTabNavigator();
+
+const AuthStack = createStackNavigator();
+
+function AuthStackNavigator(){
+  return(
+    <AuthStack.Navigator
+      initialRouteName="Login"
+      headerMode="none"
+    >
+      <AuthStack.Screen name="Login" component={LoginScreen} />
+      <AuthStack.Screen name="Register" component={RegisterScreen} />
+    </AuthStack.Navigator>
+  )
+}
+
+function HomeStackRenderer(){
+  return(
+    <HomeStack.Navigator
+      initialRouteName="Home"
+    >
+      <HomeStack.Screen name="Home" component={HomeScreen} options={{}}/>
+      <HomeStack.Screen name="Edit" component={ExpenseForm} options={{}}/>
+    </HomeStack.Navigator>
+  )
+}
+
+const HomeStack = createStackNavigator();
+
+const BottomNav = createBottomTabNavigator();
+
+function BottomNavRenderer(){
+  
+  return (
+    <BottomNav.Navigator 
+      initialRouteName="Home" 
+      backBehavior="history"
+      tabBarOptions={{
+        activeBackgroundColor: 'grey',
+      }}
+    >
+      <BottomNav.Screen 
+          name="Home" 
+          component={HomeStackRenderer} 
+          options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="home" color={color} size={size} />
+          ),
+          }}
+      />
+      <BottomNav.Screen 
+          name="Categories"  
+          component={CategoryList} 
+          options={{
+          tabBarLabel: 'Categories',
+          tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="cards" color={color} size={size} />
+          ),
+          }}
+      />
+      <BottomNav.Screen 
+          name="New"  
+          component={ExpenseForm} 
+          options={{
+          tabBarLabel: 'New',
+          tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons 
+                name="plus-circle" 
+                color="red" 
+                size={size}             
+              />
+          ),
+          }}
+      />
+      <BottomNav.Screen 
+          name="Stats"  
+          component={ExpenseForm} 
+          options={{
+          tabBarLabel: 'Stats',
+          tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="graphql" color={color} size={size} />
+          ),
+          }}
+      />
+      <BottomNav.Screen 
+          name="Settings"  
+          component={ExpenseForm} 
+          options={{
+          tabBarLabel: 'Settings',
+          tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="settings" color={color} size={size} />
+          ),
+          }}
+      />
+  </BottomNav.Navigator>
+  )
+}
 
 class SaviorApp extends Component {
 
@@ -28,58 +126,23 @@ class SaviorApp extends Component {
   }
 
   render() {
-    
-    if(!this.props.userID){
-        return(<LoginScreen />)
-    }
-    else{
-        return (
-            <NavigationContainer>
-                <SaviorHeader />
-                <Tab.Navigator 
-                  initialRouteName="Home" 
-                  backBehavior="history"
-                  tabBarOptions={{
-                    activeBackgroundColor: 'grey',
-                  }}
-                >
-                    <Tab.Screen 
-                        name="Expenses" 
-                        component={HomeScreen} 
-                        options={{
-                        tabBarLabel: 'Home',
-                        tabBarIcon: ({ color, size }) => (
-                            <MaterialCommunityIcons name="home" color={color} size={size} />
-                        ),
-                        }}
-                    />
-                    <Tab.Screen 
-                        name="Categories"  
-                        component={CategoryList} 
-                        options={{
-                        tabBarLabel: 'Categories',
-                        tabBarIcon: ({ color, size }) => (
-                            <MaterialCommunityIcons name="cards" color={color} size={size} />
-                        ),
-                        }}
-                    />
-                    <Tab.Screen 
-                        name="New"  
-                        component={ExpenseForm} 
-                        options={{
-                        tabBarLabel: 'New',
-                        tabBarIcon: ({ color, size }) => (
-                            <MaterialCommunityIcons name="plus" color={color} size={size} />
-                        ),
-                        }}
-                    />
-                </Tab.Navigator>
-            </NavigationContainer>
+
+    return (
+      <NavigationContainer>
+        {!this.props.userID ? (
+           <AuthStackNavigator />
+          )
+          :
+          (
+          <BottomNavRenderer />
+          )}
+      </NavigationContainer>
         );
-    }
+    
     
   }
 }
+
 
 const mapStateToProps = state => ({
   userID: state.auth.userID,
