@@ -7,25 +7,27 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {  Input, Button } from 'react-native-elements';
 import { TouchableHighlight, Text, View, TextInput, StyleSheet, Picker } from 'react-native';
 
-import { setCategories, addCategory, addExpense } from '../redux/actions/actions'
-import { getAllCategories } from '../redux/selectors'
-import expensesReducer from '../redux/reducers/expensesReducer';
-import { capitalize } from '../utils/displayFunctions';
+import { getAllCategories } from '../../redux/selectors';
+import expensesReducer from '../../redux/reducers/expensesReducer';
+import { capitalize } from '../../utils/displayFunctions';
+import { setCategories, addCategory, addExpense } from '../../redux/actions/actions';
 
+
+const initialState = {
+  add: false,
+  test: '', 
+  title: '', 
+  amount: '', 
+  category: '', 
+  date: new Date(),
+  newCategory: '', 
+  showDatePicker: false
+};
 
 class ExpenseForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-        add: false,
-        test: '', 
-        title: '', 
-        amount: '', 
-        category: '', 
-        date: new Date(),
-        newCategory: '', 
-        showDatePicker: false
-    };
+    this.state = initialState;
 
     this.showDatepicker = this.showDatepicker.bind(this);
     this.createCategory = this.createCategory.bind(this);
@@ -57,6 +59,8 @@ class ExpenseForm extends Component {
       currency: 'USD'
     }
     this.props.addExpense(newExpense)
+    this.props.navigation.navigate("Home")
+    this.setState(initialState)
   }
 
   render() {

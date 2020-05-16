@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { FlatList, View, Text } from 'react-native';
 import { connect } from 'react-redux';
 
-import ExpenseList from './ExpenseList';
-import { setCategories, setExpenses, setFirebase } from '../redux/actions/actions';
-import { getExpensesFromCategory, getAllExpenses, getTotalSpendings, getCurrentUserName } from '../redux/selectors';
-import LoginScreen from './LoginScreen';
+import ExpenseList from '../Expense/ExpenseList';
+import { setCategories, setExpenses, setFirebase } from '../../redux/actions/actions';
+import { getExpensesFromCategory, getAllExpenses, getTotalSpendings, getCurrentUserName } from '../../redux/selectors';
+import LoginScreen from '../Auth/LoginScreen';
 
 class HomeScreen extends Component {
 
@@ -20,7 +20,7 @@ class HomeScreen extends Component {
       <View>
         <Text>Total Spendings: {this.props.totalSpendings}</Text>
         {this.props.expenses.length > 0 ? 
-          <ExpenseList data={this.props.expenses} />
+          <ExpenseList data={this.props.expenses} navigation={this.props.navigation} />
           :
           <Text>You don't have any expenses.</Text>
         }

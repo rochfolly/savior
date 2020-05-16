@@ -4,8 +4,8 @@ import { FlatList, View, ScrollView  } from 'react-native';
 import { Container, ListItem, Button } from 'react-native-elements';
 import { MaterialCommunityIcons, Icon } from 'react-native-vector-icons';
 
-import { capitalize, getNumberOfExpensesByCategory } from '../utils/displayFunctions';
-import { getAllExpenses, getAllCategories, getCurrentUserName, getTotalSpendings } from '../redux/selectors';
+import { capitalize, getNumberOfExpensesByCategory } from '../../utils/displayFunctions';
+import { getAllExpenses, getAllCategories, getCurrentUserName, getTotalSpendings } from '../../redux/selectors';
 
 
 class CategoryList extends Component {

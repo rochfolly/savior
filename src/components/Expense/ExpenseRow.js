@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { TouchableHighlight, Text, View } from 'react-native';
-import styles from '../style/ExpenseStyle';
+import styles from '../../style/ExpenseStyle';
 
 
 export default class ExpenseRow extends Component {

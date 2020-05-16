@@ -38,3 +38,7 @@ export const getInitialSaviorCategories = _ => {
  }
 }
 
+export function reinitializeRochExpenses(database, userID){
+  
+}
+

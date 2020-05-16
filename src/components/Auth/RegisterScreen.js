@@ -3,55 +3,48 @@ import { View, Text } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
-import { createUserAccount, setCurrentUser } from '../redux/actions/actions';
-import SaviorHeader from './SaviorHeader';
+import { createUserAccount, setCurrentUser } from '../../redux/actions/actions';
+import SaviorHeader from '../SaviorHeader';
 
 
-class LoginScreen extends Component {
+class RegisterScreen extends Component {
   constructor(props){
     super(props);
     this.state = {
         name: '',
         email: '',
         password: '',
-        login: true,
     };
 
-    this.authenticate = this.authenticate.bind(this);
+    this.signIn = this.signIn.bind(this);
   }
 
-  authenticate(){
-      if(this.state.login){
-          this.props.setCurrentUser(this.state.email, this.state.password)
-      }
-      else this.props.createUserAccount(this.state.name, this.state.email, this.state.password)
+  signIn(){
+    this.props.createUserAccount(this.state.name, this.state.email, this.state.password)
   }
 
 
   render() {
    // Icon.getImageSource('user', 20, 'red').then((source) => console.log(source));
-   let nameInput = this.state.login == true ?
-   <Text></Text> :         
-   <Input
-        label="First Name"
-        name="firstname"
-        placeholder="John"
-        leftIcon={{ type: 'font-awesome', name: 'user' }}
-        // style={styles}
-        onChangeText={value => this.setState({ name: value })}
-    />
-
-
+       
     return (
         <View>
             <SaviorHeader/>
-            <Text>{this.state.login ? "LOG IN" : "SIGNUP"}</Text>
-            {nameInput}
+            <Text>SIGNUP</Text>
+            <Input
+                label="First Name"
+                name="firstname"
+                placeholder="John"
+                leftIcon={{ type: 'font-awesome', name: 'user' }}
+                // style={styles}
+                onChangeText={value => this.setState({ name: value })}
+            />
             <Input
                 label="Email address"
                 name="email"
                 placeholder="example@gmail.com"
-                leftIcon={{ type: 'font-awesome', name: 'envelope' }}
+                autoCapitalize='none'
+                leftIcon={{ type: 'font-awesome', name: 'envelope', containerStyle: {paddingRight: 5}  }}
                 // style={styles}
                 onChangeText={value => this.setState({ email: value })}
             />
@@ -60,32 +53,29 @@ class LoginScreen extends Component {
                 name="password"
                 secureTextEntry={true} 
                 placeholder=""
-                leftIcon={{ type: 'font-awesome', name: 'lock' }}
+                autoCapitalize='none'
+                leftIcon={{ type: 'font-awesome', name: 'lock', containerStyle: {paddingRight: 5}  }}
                 // style={styles}
                 onChangeText={value => this.setState({ password: value })}                      
             />
             <Button
-                title={this.state.login ? "LOG IN" : "SIGNUP"}
+                title="SIGNUP"
                 buttonStyle={{ 'borderColor': 'green' }}
                 type="solid"
-                onPress={this.authenticate}
+                onPress={this.signIn}
             />
-            <Button
-                title={this.state.login ? "Sign up" : "Log in"}
-                type="outline"
-                onPress={() => this.setState({login: !this.state.login})}
-            />
+            <Text>Already have an account ? </Text>
+            <Button title="Login" type="clear" onPress={() => this.props.navigation.navigate('Login')}/>
         </View>
     );
   }
 }
 
 const mapDispatchToProps = dispatch => ({
-  setCurrentUser: (email, password) => {dispatch(setCurrentUser(email, password))},
   createUserAccount: (name, email, password) => {dispatch(createUserAccount(name, email, password))},
 })
 
 export default connect(
   null,
   mapDispatchToProps
-  )(LoginScreen)
+  )(RegisterScreen)

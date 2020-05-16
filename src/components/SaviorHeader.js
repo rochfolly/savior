@@ -1,7 +1,9 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { View,  } from 'react-native';
+import { View } from 'react-native';
+import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import { Container, Header, Text } from 'react-native-elements';
+
 import { getTotalSpendings } from '../redux/selectors';
 
 
@@ -20,7 +22,13 @@ class SaviorHeader extends Component {
           <Header
             leftComponent={{ icon: 'menu', color: '#fff' }}
             centerComponent={{ text: 'Savior', style: { color: '#fff', fontFamily: 'sans-serif-medium', fontSize: 24 } }}
-            rightComponent={{ icon: 'add', color: '#fff' }} 
+            rightComponent={
+              <MaterialCommunityIcons 
+                name="plus" 
+                color="#fff"
+                onPress={() => this.props.navigation.navigate('Home')}
+                />
+            }
             
           /> 
           {textBand}
