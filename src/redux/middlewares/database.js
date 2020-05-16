@@ -1,26 +1,14 @@
-import * as firebase from 'firebase';
-
+import firebase  from '../../database/firebaseInit';
 import { 
   INIT_CATEGORIES, INIT_EXPENSES, INIT_FIREBASE, 
   ADD_CATEGORY, ADD_EXPENSE, UPDATE_CATEGORY,
-  CREATE_USER, SET_USER } from '../actions/actionTypes';
+  CREATE_USER, SET_USER, REMOVE_EXPENSE } from '../actions/actionTypes';
 import { getCategoryID, getNextCategoryKey, getNextExpenseKey } from '../../utils/storeFunctions';
 import { updateCategory, setCurrentUser } from '../actions/actions'
 import {  getCurrentUserID ,getCategoryByID } from '../selectors';
-import { getInitialSaviorCategories } from '../../utils/firebaseFunctions';
+import { getInitialSaviorCategories, reinitializeRochExpenses } from '../../utils/firebaseFunctions';
 
 
-var firebaseConfig = {
-    apiKey: "AIzaSyDPZaXtO9hYIrvyGO-ACFwmwClesprGt6Y",
-    authDomain: "savior-database.firebaseapp.com",
-    databaseURL: "https://savior-database.firebaseio.com",
-    projectId: "savior-database",
-    storageBucket: "savior-database.appspot.com",
-    messagingSenderId: "165579264658",
-    appId: "1:165579264658:web:e61250132a47555e238c4b"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
 
   ////// DATABASE MIDDLEWARE //////
   export const database = store => next => action => {
@@ -30,6 +18,19 @@ var firebaseConfig = {
         case INIT_FIREBASE: 
           action.payload = firebase;
           next(action);
+        //   firebase.database().ref('DGxx1LOWyldPGQjctOggwZFXMdB3' + '/expenses').once('value', (expensesData) => {
+        //     if(expensesData.exists()){
+        //       let expenses = expensesData.val();
+        //       firebase.database().ref('/expenses/').set(expenses, (error) => {
+        //        if(error) console.log(error)
+        //        else {
+        //            console.log("Roch's expenses reinitialized");              
+        //        }
+        //    })
+        //     }
+        //   }, (error) => {
+        //   console.log(error)
+        // })
           break;
 
         case CREATE_USER:
@@ -88,7 +89,7 @@ var firebaseConfig = {
             }); 
           break;
 
-        // Categories
+        ////////////////////////////////////// CATEGORIES /////////////////////////////////////////////
         case INIT_CATEGORIES:
           firebase.database().ref(userID + '/categories').once('value', (categoriesData) => {
               action.payload = Object.values(categoriesData.val())
@@ -127,7 +128,7 @@ var firebaseConfig = {
            break;
        
 
-        // Expenses
+        ///////////////////////////////////// EXPENSES ////////////////////////////////////////////
         case INIT_EXPENSES:
             firebase.database().ref(userID + '/expenses').once('value', (expensesData) => {
                 if(expensesData.exists()){
@@ -155,6 +156,19 @@ var firebaseConfig = {
                     store.dispatch(updateCategory(updatedCategory));                
                 }
             })
+          break;
+        case REMOVE_EXPENSE:
+            const removedExpense = action.payload;
+            firebase.database().ref(userID + '/expenses/' + removedExpense.expense_id).remove((error) => {
+              if(error) console.log(error)
+              else {
+                  next(action)
+                  console.log('Expense ' + removedExpense.title + '  removed');
+                  let updatedCategory = getCategoryByID(store.getState(), removedExpense.category_id);
+                  updatedCategory.total_expenses -= removedExpense.amount;
+                  store.dispatch(updateCategory(updatedCategory));                
+              }
+            }) 
           break;
     }
   }

@@ -2,6 +2,7 @@ import {
     INIT_CATEGORIES, INIT_EXPENSES, INIT_FIREBASE,
     ADD_CATEGORY, ADD_EXPENSE, 
     UPDATE_CATEGORY,
+    REMOVE_EXPENSE,
     CREATE_USER, SET_USER,
 } from './actionTypes'
 
@@ -26,6 +27,11 @@ export const setExpenses = _ => ({
 export const addExpense = newExpense => ({
     type: ADD_EXPENSE,
     payload: newExpense
+})
+
+export const removeExpense = removedExpense => ({
+    type: REMOVE_EXPENSE,
+    payload: removedExpense
 })
 
 export const setFirebase = _ => ({
