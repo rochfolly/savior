@@ -19,6 +19,8 @@ import ExpenseForm from './Expense/ExpenseForm';
 import HomeScreen from './Home/HomeScreen';
 import SaviorHeader from './SaviorHeader';
 import RegisterScreen from './Auth/RegisterScreen';
+import ExpenseEdit from './Expense/ExpenseEdit';
+import CategoryForm from './Category/CategoryForm';
 
 
 const AuthStack = createStackNavigator();
@@ -35,32 +37,76 @@ function AuthStackNavigator(){
   )
 }
 
+const HomeStack = createStackNavigator();
+
 function HomeStackRenderer(){
   return(
     <HomeStack.Navigator
       initialRouteName="Home"
+      headerMode="screen"
+      screenOptions={{
+        title:"Savior",
+        headerTitleAlign: "center",
+        headerStyle: {backgroundColor: 'skyblue'},
+        headerTitleStyle: {color: 'white'}
+      }}
     >
-      <HomeStack.Screen name="Home" component={HomeScreen} options={{}}/>
-      <HomeStack.Screen name="Edit" component={ExpenseForm} options={{}}/>
+      <HomeStack.Screen name="Home" component={HomeScreen}/>
+      <HomeStack.Screen name="Edit" component={ExpenseEdit} options={{}}/>
     </HomeStack.Navigator>
   )
 }
 
-const HomeStack = createStackNavigator();
+const CategoryStack = createStackNavigator();
 
-const BottomNav = createBottomTabNavigator();
+function CategoryStackRenderer(){
+  return(
+    <CategoryStack.Navigator
+      initialRouteName="Categories"
+      headerMode="screen"
+      screenOptions={{
+        title:"Savior",
+        headerTitleAlign: "center",
+        headerStyle: {backgroundColor: 'skyblue'},
+        headerTitleStyle: {color: 'white'}
+      }}
+    >
+      <CategoryStack.Screen name="Categories" component={CategoryList}/>
+      <CategoryStack.Screen name="Add" component={CategoryForm} options={{}}/>
+    </CategoryStack.Navigator>
+  )
+}
 
-function BottomNavRenderer(){
+// Global App
+const AppStack = createBottomTabNavigator();
+
+function AppStackRenderer(){
   
   return (
-    <BottomNav.Navigator 
+    <AppStack.Navigator 
       initialRouteName="Home" 
       backBehavior="history"
       tabBarOptions={{
         activeBackgroundColor: 'grey',
       }}
+      // headerTitleAlign="center"
+      headerMode="screen"
+      screenOptions={({ route }) => ({
+          title:"Savior",
+          headerTitleAlign: "center",
+          headerStyle: {backgroundColor: 'skyblue'},
+          headerTitleStyle: {color: 'white'}
+        }
+      )}
+      screenptions={{
+        title:"Savior",
+        headerTitleAlign: "center",
+        headerStyle: {backgroundColor: 'skyblue'},
+        headerTitleStyle: {color: 'white'}
+      }}
+      
     >
-      <BottomNav.Screen 
+      <AppStack.Screen 
           name="Home" 
           component={HomeStackRenderer} 
           options={{
@@ -70,9 +116,9 @@ function BottomNavRenderer(){
           ),
           }}
       />
-      <BottomNav.Screen 
+      <AppStack.Screen 
           name="Categories"  
-          component={CategoryList} 
+          component={CategoryStackRenderer} 
           options={{
           tabBarLabel: 'Categories',
           tabBarIcon: ({ color, size }) => (
@@ -80,7 +126,7 @@ function BottomNavRenderer(){
           ),
           }}
       />
-      <BottomNav.Screen 
+      <AppStack.Screen 
           name="New"  
           component={ExpenseForm} 
           options={{
@@ -94,7 +140,7 @@ function BottomNavRenderer(){
           ),
           }}
       />
-      <BottomNav.Screen 
+      <AppStack.Screen 
           name="Stats"  
           component={ExpenseForm} 
           options={{
@@ -104,7 +150,7 @@ function BottomNavRenderer(){
           ),
           }}
       />
-      <BottomNav.Screen 
+      <AppStack.Screen 
           name="Settings"  
           component={ExpenseForm} 
           options={{
@@ -114,7 +160,7 @@ function BottomNavRenderer(){
           ),
           }}
       />
-  </BottomNav.Navigator>
+  </AppStack.Navigator>
   )
 }
 
@@ -134,7 +180,7 @@ class SaviorApp extends Component {
           )
           :
           (
-          <BottomNavRenderer />
+          <AppStackRenderer />
           )}
       </NavigationContainer>
         );
