@@ -1,5 +1,21 @@
 import { getAllExpenses, getAllCategories } from '../redux/selectors';
 
+
+export function getCategoryByID(store, categoryID){
+    const categories = store.getState().category.categories;
+    return categories.find(category => category.category_id === categoryID);
+}
+
+export function getCategoryByName(store, categoryName){
+    const categories = store.getState().category.categories;
+    return categories.find(category => category.category_name === categoryName);
+}
+
+export function getExpense(store, expenseID){
+    const expenses = store.getState().expense.expenses;
+    return expenses.find(expense => expense.expense_id == expenseID)
+}
+
 export function getNextCategoryKey(store){
     const categories = getAllCategories(store.getState());
     const lastCategory = categories[categories.length - 1];
@@ -35,6 +51,11 @@ export function getNextExpenseKey(store){
 export function getCategoryID(store, categoryName){
     const categories = store.getState().category.categories;
     let storedCategory = categories.find(category => category.category_name == categoryName)
-    console.log('storedCategory', storedCategory)
     return storedCategory.category_id
+}
+
+export function getCategoryIcon(store, categoryName){
+    const categories = store.getState().category.categories;
+    let storedCategory = categories.find(category => category.category_name == categoryName)
+    return storedCategory.icon;
 }

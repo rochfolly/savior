@@ -13,14 +13,18 @@ export default function(state = initialState, action) {
               categories: currentCategories
             };
           }
-          case ADD_CATEGORY: {
+          break;
+
+        case ADD_CATEGORY: {
             const newCategory = action.payload;
             return {
               ...state,
               categories: [...state.categories, newCategory]
             };
           }
-          case UPDATE_CATEGORY: {
+          break;
+
+        case UPDATE_CATEGORY: {
              const { category_id } = action.payload;
              const categoryToUpdate = state.categories.find(category => category.category_id === category_id);
              const indexInCurrentState = state.categories.indexOf(categoryToUpdate);
@@ -35,6 +39,7 @@ export default function(state = initialState, action) {
                })
              };
            }
+           break;
         default:
             return state
     }

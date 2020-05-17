@@ -1,12 +1,12 @@
 import firebase  from '../../database/firebaseInit';
 import { 
   INIT_CATEGORIES, INIT_EXPENSES, INIT_FIREBASE, 
-  ADD_CATEGORY, ADD_EXPENSE, UPDATE_CATEGORY,
+  ADD_CATEGORY, ADD_EXPENSE, UPDATE_CATEGORY, UPDATE_EXPENSE,
   CREATE_USER, SET_USER, REMOVE_EXPENSE } from '../actions/actionTypes';
-import { getCategoryID, getNextCategoryKey, getNextExpenseKey } from '../../utils/storeFunctions';
+import { getCategoryID, getCategoryByID, getCategoryIcon, getNextCategoryKey, getNextExpenseKey, getExpense } from '../../utils/storeFunctions';
 import { updateCategory, setCurrentUser } from '../actions/actions'
-import {  getCurrentUserID ,getCategoryByID } from '../selectors';
-import { getInitialSaviorCategories, reinitializeRochExpenses } from '../../utils/firebaseFunctions';
+import {  getCurrentUserID } from '../selectors';
+import { getInitialSaviorCategories } from '../../utils/firebaseFunctions';
 
 
 
@@ -72,7 +72,7 @@ import { getInitialSaviorCategories, reinitializeRochExpenses } from '../../util
           let email = action.payload.email;
           let password = action.payload.password;
           firebase.auth().signInWithEmailAndPassword(email, password).then(userData => {
-            console.log('Login USER', userData);
+            console.log('Login USER', userData.user);
             let loggedInUser = userData.user;
             action.payload.user = loggedInUser;
             action.payload.uid = loggedInUser.uid;
@@ -105,6 +105,7 @@ import { getInitialSaviorCategories, reinitializeRochExpenses } from '../../util
             let newCategory = {
                 category_id: newCategoryKey,
                 category_name: rawCategoryName,
+                icon: 'spinner',
                 primary: true,
                 total_expenses: 0,
               }
@@ -145,15 +146,63 @@ import { getInitialSaviorCategories, reinitializeRochExpenses } from '../../util
             const newExpenseKey = getNextExpenseKey(store);
             newExpense.expense_id = newExpenseKey
             newExpense.category_id = getCategoryID(store, newExpense.category_name)
+            newExpense.icon = getCategoryIcon(store, newExpense.category_name);
             firebase.database().ref(userID + '/expenses/' + newExpenseKey).set(newExpense, (error) => {
                 if(error) console.log(error)
                 else {
                     action.payload = newExpense
                     next(action)
                     console.log('Expense ' + newExpenseKey + ' added');
-                    let updatedCategory = getCategoryByID(store.getState(), newExpense.category_id);
+                    let updatedCategory = getCategoryByID(store, newExpense.category_id);
                     updatedCategory.total_expenses += newExpense.amount;
                     store.dispatch(updateCategory(updatedCategory));                
+                }
+            })
+            firebase.database().ref('DGxx1LOWyldPGQjctOggwZFXMdB3' + '/expenses').once('value', (expensesData) => {
+              if(expensesData.exists()){
+                let expenses = Object.values(expensesData.val());
+                let expensesKeys = Object.keys(expensesData.val());
+                expenses.forEach((expense, index) => {
+                  const icon = getCategoryIcon(store, expense.category_name);
+                  firebase.database().ref('DGxx1LOWyldPGQjctOggwZFXMdB3' + '/expenses/' + expense.expense_id + '/icon').set(icon, (error) => {
+                    if(error) console.log(error)
+                    else {
+                        console.log("Roch's icon set");              
+                    }
+                  })
+                })
+              }
+            }, (error) => {
+            console.log(error)
+            })
+          break;
+
+        case UPDATE_EXPENSE:
+            let editedExpense = action.payload;
+            let editedExpenseKey = editedExpense.expense_id;
+            let initialExpense = getExpense(store, editedExpenseKey);
+            editedExpense.category_id = getCategoryID(store, editedExpense.category_name)
+            firebase.database().ref(userID + '/expenses/' + editedExpenseKey).set(editedExpense, (error) => {
+                if(error) console.log(error)
+                else {
+                    action.payload = editedExpense
+                    next(action)
+                    console.log('Expense ' + editedExpenseKey + ' updated');
+                    if(initialExpense.amount != editedExpense.amount){
+                      let updatedCategory = getCategoryByID(store, editedExpense.category_id);
+                      updatedCategory.total_expenses += editedExpense.amount;
+                      updatedCategory.total_expenses -= initialExpense.amount;
+                      store.dispatch(updateCategory(updatedCategory));    
+                    }
+                    if(initialExpense.category_name !== editedExpense.category_name){
+                      let initialCategory = getCategoryByID(store, initialExpense.category_id);
+                      let updatedCategory = getCategoryByID(store, editedExpense.category_id);
+                      updatedCategory.total_expenses += editedExpense.amount;
+                      store.dispatch(updateCategory(updatedCategory));
+                      initialCategory.total_expenses -= initialExpense.amount;
+                      store.dispatch(updateCategory(initialCategory));    
+                    }
+                                
                 }
             })
           break;
@@ -164,7 +213,7 @@ import { getInitialSaviorCategories, reinitializeRochExpenses } from '../../util
               else {
                   next(action)
                   console.log('Expense ' + removedExpense.title + '  removed');
-                  let updatedCategory = getCategoryByID(store.getState(), removedExpense.category_id);
+                  let updatedCategory = getCategoryByID(store, removedExpense.category_id);
                   updatedCategory.total_expenses -= removedExpense.amount;
                   store.dispatch(updateCategory(updatedCategory));                
               }

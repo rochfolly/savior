@@ -2,18 +2,6 @@ export const getCurrentUserID = state => state.auth.userID;
 
 export const getCurrentUserName = state => state.auth.username;
 
-export const getCategoryByName = (state, categoryName) => {
-    return state.category.categories.find(category => category.category_name === categoryName);
-}
-
-export const getCategoryByID = (state, categoryID) => {
-    return state.category.categories.find(category => category.category_id === categoryID);
-}
-
-export const getExpense = (state, expenseID) => {
-    return state.expense.expenses.find(expense => expense_id == expenseID)
-}
-
 export const getAllCategories = state => state.category.categories;
 
 export const getAllExpenses = state => state.expense.expenses;

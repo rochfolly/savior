@@ -11,38 +11,50 @@ import { getAllExpenses, getAllCategories, getCurrentUserName, getTotalSpendings
 class CategoryList extends Component {
     render() {
       return (
-        <ScrollView accessibilityRole='scrollbar' >
-          {
-            this.props.categories.map((category, index) => (
-              <ListItem
-                key={index}
-                title={capitalize(category.category_name)}
-                subtitle={getNumberOfExpensesByCategory(this.props.expenses, category.category_id).toString() + ' expenses'}
-                leftAvatar={<MaterialCommunityIcons name={category.icon} color={'grey'} size={24} /> }
-                rightElement={
-                  <Button 
-                    title={'$' + category.total_expenses.toString()} 
-                    type="solid" 
-                    buttonStyle={{
-                        backgroundColor: 'red',
-                        width: 60,
-                        height: 30
-                    }}
-                  />
-                }
-                bottomDivider
-                chevron
-              />
-            ))
-          }
-          {/* <FlatList 
-            data={this.props.data} 
-            renderItem={({item}) => 
-                <CategoryRow title={item.title} key={item.key} category={item.category_name} amount={item.amount} />
+        <View>
+          <Button
+            title="+ Add a category"
+            type="solid" 
+            buttonStyle={{
+                backgroundColor: 'green',
+                width: 120,
+                height: 45
+              }}
+              onPress={() => {this.props.navigation.navigate("Add")}}
+            />
+          <ScrollView accessibilityRole='scrollbar' >
+            {
+              this.props.categories.map((category, index) => (
+                <ListItem
+                  key={index}
+                  title={capitalize(category.category_name)}
+                  subtitle={getNumberOfExpensesByCategory(this.props.expenses, category.category_id).toString() + ' expenses'}
+                  leftAvatar={<MaterialCommunityIcons name={category.icon} color={'grey'} size={24} /> }
+                  rightElement={
+                    <Button 
+                      title={'$' + category.total_expenses.toString()} 
+                      type="solid" 
+                      buttonStyle={{
+                          backgroundColor: 'red',
+                          width: 60,
+                          height: 30
+                      }}
+                    />
+                  }
+                  bottomDivider
+                  chevron
+                />
+              ))
             }
-            keyExtractor={(item, index) => index.toString()}
-          /> */}
-        </ScrollView >
+            {/* <FlatList 
+              data={this.props.data} 
+              renderItem={({item}) => 
+                  <CategoryRow title={item.title} key={item.key} category={item.category_name} amount={item.amount} />
+              }
+              keyExtractor={(item, index) => index.toString()}
+            /> */}
+          </ScrollView>
+        </View>
       );
     }
   }

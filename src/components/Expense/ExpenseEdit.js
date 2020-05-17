@@ -2,7 +2,7 @@ import moment from 'moment';
 import * as firebase from 'firebase';
 import { connect } from "react-redux";
 import React, { Component } from 'react';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/Feather';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {  Input, Button } from 'react-native-elements';
 import { TouchableHighlight, Text, View, TextInput, StyleSheet, Picker } from 'react-native';
@@ -10,27 +10,29 @@ import { TouchableHighlight, Text, View, TextInput, StyleSheet, Picker } from 'r
 import { getAllCategories } from '../../redux/selectors';
 import expensesReducer from '../../redux/reducers/expensesReducer';
 import { capitalize } from '../../utils/displayFunctions';
-import { addCategory, addExpense } from '../../redux/actions/actions';
+import { addCategory, updateExpense } from '../../redux/actions/actions';
 
 
-const initialState = {
-  add: false, 
-  title: '', 
-  amount: '', 
-  category: '', 
-  date: new Date(),
-  newCategory: '', 
-  showDatePicker: false
-};
 
-class ExpenseForm extends Component {
+class ExpenseEdit extends Component {
   constructor(props) {
     super(props);
-    this.state = initialState;
+    const { expense } = this.props.route.params;
+    // Sat May 16 2020 15:07:43 GMT-0400 (heure d’été de l’Est)
+    this.state = {
+        add: false,
+        expense_id: expense.expense_id, 
+        title: expense.title, 
+        amount: expense.amount.toString(), 
+        category: expense.category_name, 
+        date: new Date(expense.created),
+        newCategory: '', 
+        showDatePicker: false 
+    };
 
     this.showDatepicker = this.showDatepicker.bind(this);
     this.createCategory = this.createCategory.bind(this);
-    this.createExpense = this.createExpense.bind(this);
+    this.editExpense = this.editExpense.bind(this);
   }
 
   showDatepicker(){
@@ -49,17 +51,17 @@ class ExpenseForm extends Component {
     })
   }
 
-  createExpense(){
-    let newExpense = {
+  editExpense(){
+    let editedExpense = {
+      expense_id: this.state.expense_id,
       title: this.state.title,
       amount: parseInt(this.state.amount), 
       category_name: this.state.category, 
       created: this.state.date.toISOString(),
       currency: 'USD'
-    }
-    this.props.addExpense(newExpense)
-    this.props.navigation.navigate("Home")
-    this.setState(initialState)
+    };
+    this.props.updateExpense(editedExpense);
+    this.props.navigation.goBack();
   }
 
   render() {
@@ -67,8 +69,8 @@ class ExpenseForm extends Component {
          <Picker.Item key={index} label={capitalize(choice.category_name)} value={choice.category_name} />
       )
     
-     const newCategoryZone = this.state.add == false ? null :
-       <View style={styles.container}>
+     const newCategoryZone = 
+     <View style={styles.container}>
         <TextInput 
           label="New Category" 
           name="new_category"
@@ -121,11 +123,11 @@ class ExpenseForm extends Component {
                 {selectChoices}
                 <Picker.Item key={selectChoices.length} label="Create new category" value="new" />
             </Picker>
-            {newCategoryZone}
+            {this.state.add && newCategoryZone}
 
             <Text>Date</Text>
             <Text>{moment(this.state.date).format('LL')}</Text>
-            <Icon name="edit" size={30} color="#900" onPress={this.showDatepicker} />
+            <Icon name="edit-2" size={30} color="#900" onPress={this.showDatepicker} />
             {this.state.showDatePicker && (
             <DateTimePicker
               testID="DatePicker"
@@ -136,15 +138,16 @@ class ExpenseForm extends Component {
               display="calendar"
               onChange={(event, selectedDate) => {
                 if(selectedDate !== undefined){
-                  this.setState({date: selectedDate, showDatePicker: false});
-              }
+                    this.setState({date: selectedDate, showDatePicker: false});
+                }
               }}
             />
             )}
             </View>
             <Button
               title={'Save'}
-              onPress={this.createExpense}
+              color="green"
+              onPress={this.editExpense}
              />
           </View>
      );
@@ -157,9 +160,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   addCategory: (newCategory) => {dispatch(addCategory(newCategory))},
-  addExpense: (newExpense) => {dispatch(addExpense(newExpense))}
+  updateExpense: (editedExpense) => {dispatch(updateExpense(editedExpense))}
 })
-export default connect(mapStateToProps, mapDispatchToProps)(ExpenseForm)
+export default connect(mapStateToProps, mapDispatchToProps)(ExpenseEdit)
 
 const styles = StyleSheet.create({
   container: {

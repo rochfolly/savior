@@ -28,6 +28,13 @@ class ExpenseList extends Component {
       })
     }
 
+    goToEdit = (expense) => {
+      this.displayModal(null);
+      this.props.navigation.navigate("Edit",{
+        expense
+      });
+    }
+
     render() {
       return (
         <ScrollView  accessibilityRole='scrollbar' >
@@ -37,7 +44,7 @@ class ExpenseList extends Component {
                 key={index}
                 title={expense.title}
                 subtitle={capitalize(expense.category_name)}
-                leftIcon={<MaterialCommunityIcons name="food" color={'grey'} size={24} /> }
+                leftIcon={<MaterialCommunityIcons name={expense.icon} color={'grey'} size={24} /> }
                 rightElement={
                   <Button 
                     title={'- ' + expense.amount.toString()} 
@@ -80,7 +87,7 @@ class ExpenseList extends Component {
                     width: 60,
                     height: 30
                 }}
-                onPress={() => {this.props.navigation.navigate("Edit")}}
+                onPress={() => {this.goToEdit(this.state.activeExpense)}}
               />
               <Button
                 title="Remove"
