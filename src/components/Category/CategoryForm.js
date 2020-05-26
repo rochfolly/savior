@@ -3,11 +3,9 @@ import * as firebase from 'firebase';
 import { connect } from "react-redux";
 import React, { Component } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {  Input, Button, Icon } from 'react-native-elements';
-import { TouchableHighlight, Text, View, TextInput, StyleSheet, Picker } from 'react-native';
+import {  Input, Button, Icon, CheckBox, Text  } from 'react-native-elements';
+import { TouchableHighlight, View, TextInput, StyleSheet, Picker } from 'react-native';
 
-import { getAllCategories } from '../../redux/selectors';
-import expensesReducer from '../../redux/reducers/expensesReducer';
 import { capitalize } from '../../utils/displayFunctions';
 import { addCategory, addExpense } from '../../redux/actions/actions';
 
@@ -15,7 +13,9 @@ import { addCategory, addExpense } from '../../redux/actions/actions';
 const initialState = { 
   title: '', 
   monthly_limit: '',
-  icon: '', 
+  weekly_limit: '',
+  icon: null,
+  primary: true
 };
 
 class CategoryForm extends Component {
@@ -28,36 +28,24 @@ class CategoryForm extends Component {
 
   createCategory(){
     let newCategory = {
-      title: this.state.title.trim().toLowerCase(),
-      amount: parseInt(this.state.amount), 
-      category_name: this.state.category, 
-      created: this.state.date.toISOString(),
-      currency: 'USD'
+      category_name: this.state.title.trim().toLowerCase(),
+      primary: this.state.primary,
+      icon: this.state.icon, 
+      weekly_limit: this.state.weekly_limit ? parseInt(this.state.weekly_limit) : null,
+      monthly_limit: this.state.monthly_limit ? parseInt(this.state.monthly_limit) : null
     };
     this.props.addCategory(newCategory);
     this.props.navigation.navigate("Categories");
     this.setState(initialState);
   }
 
-  render() {
-    
-     const newCategoryZone = this.state.add == false ? null :
-       <View style={styles.container}>
-        <TextInput 
-          label="New Category" 
-          name="new_category"
-          style={styles.textInput}
-          value={this.state.newCategory}
-          onChangeText={(text) => this.setState({newCategory: text})}
-        />
-        <Button title={'Add'} onPress={this.createCategory} />
-      </View>
 
+  render() {
 
       // RENDER THE FORM
       return(
         <View style={styles.container}>
-          <Text h4>NEW Category</Text>
+          <Text h4>New Category</Text>
           <View name="Form" style={styles.container}>
             <Input
                 label="Name"
@@ -70,9 +58,29 @@ class CategoryForm extends Component {
                 })}
             />
 
+            <CheckBox
+                center
+                title='Primary'
+                checked={this.state.primary}
+                disabled
+            />
+
             <Input
-                label="Monthly limit"
+                label="Monthly limit (optional)"
                 name="monthly_limit"
+                keyboardType="numeric"
+                placeholder=""
+                // leftIcon={{ type: 'font-awesome', name: 'envelope', containerStyle: {paddingRight: 5} }}
+                // style={styles}
+                onChangeText={(text) => this.setState((prevState, props) => {
+                    return {weekly_limit: text}
+                })}
+            />
+
+            <Input
+                label="Weekly limit (optional)"
+                name="weekly"
+                keyboardType="numeric"
                 placeholder=""
                 // leftIcon={{ type: 'font-awesome', name: 'envelope', containerStyle: {paddingRight: 5} }}
                 // style={styles}
@@ -97,7 +105,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   addCategory: (newCategory) => {dispatch(addCategory(newCategory))},
-  addExpense: (newExpense) => {dispatch(addExpense(newExpense))}
 })
 export default connect(mapStateToProps, mapDispatchToProps)(CategoryForm)
 

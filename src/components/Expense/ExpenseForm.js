@@ -8,7 +8,6 @@ import {  Input, Button } from 'react-native-elements';
 import { TouchableHighlight, Text, View, TextInput, StyleSheet, Picker } from 'react-native';
 
 import { getAllCategories } from '../../redux/selectors';
-import expensesReducer from '../../redux/reducers/expensesReducer';
 import { capitalize } from '../../utils/displayFunctions';
 import { addCategory, addExpense } from '../../redux/actions/actions';
 
@@ -39,7 +38,7 @@ class ExpenseForm extends Component {
 
   createCategory(){
     let newCategory = this.state.newCategory
-    this.props.addCategory(newCategory.trim().toLowerCase())
+    this.props.addCategory({category_name: newCategory.trim().toLowerCase()})
 
     this.setState((prevState, props) => {
       return {
@@ -152,7 +151,7 @@ class ExpenseForm extends Component {
 }
 
 const mapStateToProps = state => ({
-  categories: state.category.categories,
+  categories: getAllCategories(state),
 })
 
 const mapDispatchToProps = dispatch => ({

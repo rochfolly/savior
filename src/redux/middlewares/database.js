@@ -100,14 +100,16 @@ import { getInitialSaviorCategories } from '../../utils/firebaseFunctions';
           break;
 
         case ADD_CATEGORY:
-            const rawCategoryName = action.payload;
+            const rawCategory = action.payload;
             const newCategoryKey = getNextCategoryKey(store);
             let newCategory = {
                 category_id: newCategoryKey,
-                category_name: rawCategoryName,
-                icon: 'spinner',
-                primary: true,
-                total_expenses: 0,
+                category_name: rawCategory.category_name,
+                icon: rawCategory.icon ?? 'lock-question',
+                primary: rawCategory.primary ?? true,
+                weekly_limit: rawCategory.weekly_limit ?? null,
+                monthly_limit: rawCategory.monthly_limit ?? null,
+                total_expenses: 0
               }
             firebase.database().ref(userID + '/categories/' + newCategoryKey).set(newCategory, (error) => {
                 if(error) console.log(error)

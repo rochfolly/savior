@@ -15,3 +15,7 @@ export const getCategoryIcon = (categories, categoryName) => {
     let category = categories.find(category => category.category_name === categoryName);
     return category.icon
 };
+
+export const getIconTitles = _ => [
+    
+]

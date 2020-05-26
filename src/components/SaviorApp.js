@@ -91,13 +91,13 @@ function AppStackRenderer(){
       }}
       // headerTitleAlign="center"
       headerMode="screen"
-      screenOptions={({ route }) => ({
-          title:"Savior",
-          headerTitleAlign: "center",
-          headerStyle: {backgroundColor: 'skyblue'},
-          headerTitleStyle: {color: 'white'}
-        }
-      )}
+      // screenOptions={({ route }) => ({
+      //     title:"Savior",
+      //     headerTitleAlign: "center",
+      //     headerStyle: {backgroundColor: 'skyblue'},
+      //     headerTitleStyle: {color: 'white'}
+      //   }
+      // )}
       screenptions={{
         title:"Savior",
         headerTitleAlign: "center",
@@ -106,60 +106,60 @@ function AppStackRenderer(){
       }}
       
     >
-      <AppStack.Screen 
-          name="Home" 
-          component={HomeStackRenderer} 
-          options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="home" color={color} size={size} />
-          ),
-          }}
-      />
-      <AppStack.Screen 
-          name="Categories"  
-          component={CategoryStackRenderer} 
-          options={{
-          tabBarLabel: 'Categories',
-          tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="cards" color={color} size={size} />
-          ),
-          }}
-      />
-      <AppStack.Screen 
-          name="New"  
-          component={ExpenseForm} 
-          options={{
-          tabBarLabel: 'New',
-          tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons 
-                name="plus-circle" 
-                color="red" 
-                size={size}             
-              />
-          ),
-          }}
-      />
-      <AppStack.Screen 
-          name="Stats"  
-          component={ExpenseForm} 
-          options={{
-          tabBarLabel: 'Stats',
-          tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="graphql" color={color} size={size} />
-          ),
-          }}
-      />
-      <AppStack.Screen 
-          name="Settings"  
-          component={ExpenseForm} 
-          options={{
-          tabBarLabel: 'Settings',
-          tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="settings" color={color} size={size} />
-          ),
-          }}
-      />
+          <AppStack.Screen 
+              name="Home" 
+              component={HomeStackRenderer} 
+              options={{
+              tabBarLabel: 'Home',
+              tabBarIcon: ({ color, size }) => (
+                  <MaterialCommunityIcons name="home" color={color} size={size} />
+              ),
+              }}
+          />
+          <AppStack.Screen 
+              name="Categories"  
+              component={CategoryStackRenderer} 
+              options={{
+              tabBarLabel: 'Categories',
+              tabBarIcon: ({ color, size }) => (
+                  <MaterialCommunityIcons name="cards" color={color} size={size} />
+              ),
+              }}
+          />
+          <AppStack.Screen 
+              name="New"  
+              component={ExpenseForm} 
+              options={{
+              tabBarLabel: 'New',
+              tabBarIcon: ({ color, size }) => (
+                  <MaterialCommunityIcons 
+                    name="plus-circle" 
+                    color="red" 
+                    size={size}             
+                  />
+              ),
+              }}
+          />
+          <AppStack.Screen 
+              name="Stats"  
+              component={ExpenseForm} 
+              options={{
+              tabBarLabel: 'Stats',
+              tabBarIcon: ({ color, size }) => (
+                  <MaterialCommunityIcons name="graphql" color={color} size={size} />
+              ),
+              }}
+          />
+          <AppStack.Screen 
+              name="Settings"  
+              component={ExpenseForm} 
+              options={{
+              tabBarLabel: 'Settings',
+              tabBarIcon: ({ color, size }) => (
+                  <MaterialCommunityIcons name="settings" color={color} size={size} />
+              ),
+              }}
+          />
   </AppStack.Navigator>
   )
 }
